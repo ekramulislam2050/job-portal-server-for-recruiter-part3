@@ -54,14 +54,15 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         // Send a ping to confirm a successful connection
         // await client.db("admin").command({ ping: 1 });
         // console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
         // jobs related apis
-        const jobsCollection = client.db('jobPortal').collection('jobs');
-        const jobApplicationCollection = client.db('jobPortal').collection('job_applications');
+        const db = client.db('job_portal_DB');
+        const jobsCollection = db.collection('jobs');
+        const jobApplicationCollection = db.collection('job_applications');
 
         // jwt apis------
         app.post("/jwt", (req, res) => {
@@ -85,16 +86,22 @@ async function run() {
 
 
         // jobs related APIs
-        app.get('/jobs', async (req, res) => {
-            const email = req.query.email;
-            let query = {};
-            if (email) {
-                query = { hr_email: email }
-            }
-            const cursor = jobsCollection.find(query);
-            const result = await cursor.toArray();
-            res.send(result);
-        });
+        // app.get('/jobs', async (req, res) => {
+        //     const email = req.query.email;
+        //     let query = {};
+        //     if (email) {
+        //         query = { hr_email: email }
+        //     }
+        //     const cursor = jobsCollection.find(query);
+        //     const result = await cursor.toArray();
+        //     res.send(result);
+        // });
+          
+   app.get('/jobs',async(req,res)=>{
+        const cursor = jobsCollection.find({})
+        const result = await cursor.toArray()
+        res.send(result)
+   })
 
         app.get('/jobs/:id', async (req, res) => {
             const id = req.params.id;
