@@ -40,7 +40,7 @@ const tokenVerify = (req, res, next) => {
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.swu9d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 // Programming hero mongo atlas uri-------------
 
- const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hhpkb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hhpkb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -86,22 +86,19 @@ async function run() {
 
 
         // jobs related APIs
-        // app.get('/jobs', async (req, res) => {
-        //     const email = req.query.email;
-        //     let query = {};
-        //     if (email) {
-        //         query = { hr_email: email }
-        //     }
-        //     const cursor = jobsCollection.find(query);
-        //     const result = await cursor.toArray();
-        //     res.send(result);
-        // });
-          
-   app.get('/jobs',async(req,res)=>{
-        const cursor = jobsCollection.find({})
-        const result = await cursor.toArray()
-        res.send(result)
-   })
+        app.get('/jobs', async (req, res) => {
+
+            const cursor = jobsCollection.find({});
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get("/jobsGetByEmail", async (req, res) => {
+            const email = req.query.email
+            const query = { hr_email: email }
+            const result = await jobsCollection.find(query).toArray()
+            res.send(result)
+        })
 
         app.get('/jobs/:id', async (req, res) => {
             const id = req.params.id;
@@ -148,6 +145,7 @@ async function run() {
 
         app.get('/job-applications/jobs/:job_id', async (req, res) => {
             const jobId = req.params.job_id;
+            console.log(jobId)
             const query = { job_id: jobId }
             const result = await jobApplicationCollection.find(query).toArray();
             res.send(result);
