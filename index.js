@@ -88,6 +88,9 @@ async function run() {
         // jobs related APIs
         app.get('/jobs', async (req, res) => {
             const sort = req.query?.sort
+            const min =req.query?.min;
+            const max = req.query?.max;
+           
             let query={}
             const search=req.query?.search
                 let sortQuery={}
@@ -96,6 +99,14 @@ async function run() {
             }
             if(search){
                 query={location:{$regex:search,$options:"i"}}
+            }
+
+            if(min && max){
+                query={
+                    ...query,
+                    "salaryRange.min":{$gte:parseInt(min)},
+                    "salaryRange.max":{$lte:parseInt(max)}
+                }
             }
             const cursor = jobsCollection.find(query).sort(sortQuery);
             const result = await cursor.toArray();
